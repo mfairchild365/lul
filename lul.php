@@ -65,7 +65,7 @@ if (!file_exists($storage_file)) {
 
 $last = file_get_contents($storage_file);
 
-if ($newest != $last) {
-  file_put_contents($storage_file, $newest);
+if ($newest->text != $last) {
+  file_put_contents($storage_file, $newest->text);
   echo $newest->user->name . ' says ' . $newest->text . PHP_EOL;
 }
