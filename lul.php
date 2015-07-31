@@ -13,12 +13,18 @@ $url            = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 $user_name      = $argv[1];
 $query_string   = '?screen_name='.$user_name;
 $request_method = 'GET';
+$type           = 'username';
 
 $list = '';
 if (isset($argv[2])) {
-  $list = $argv[2];
-  $url = 'https://api.twitter.com/1.1/lists/statuses.json';
+  $list         = $argv[2];
+  $url          = 'https://api.twitter.com/1.1/lists/statuses.json';
   $query_string = '?owner_screen_name='.$user_name.'&slug='.$list;
+  $type         = 'list';
+} else if (0 === strpos($user_name, '#')) {
+  $type         = 'search';
+  $url          = 'https://api.twitter.com/1.1/search/tweets.json';
+  $query_string = '?q=' . urlencode($user_name);
 }
 
 $twitter = new TwitterAPIExchange($settings);
@@ -27,6 +33,10 @@ $result = $twitter->setGetfield($query_string)
     ->performRequest();
 
 $result = json_decode($result);
+
+if (isset($result->statuses)) {
+    $result = $result->statuses;
+}
 
 if (!is_array($result)) {
     //This is probably a rate limit error, but lets make sure.
@@ -42,7 +52,7 @@ if (!is_array($result)) {
         foreach ($result->errors as $error) {
             echo $error->message . PHP_EOL;
         }
-    } else { 
+    } else {
         echo 'unknown error' . PHP_EOL;
     }
     
