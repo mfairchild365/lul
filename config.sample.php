@@ -7,4 +7,4 @@ $settings = array(
     'consumer_secret'           => "CONSUMER_SECRET"
 );
 
-$voice = '';
+$voice = 'Samantha';
