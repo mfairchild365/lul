@@ -75,7 +75,9 @@ if (!file_exists($storage_file)) {
 
 $last = file_get_contents($storage_file);
 
-if ($newest->text != $last) {
-  file_put_contents($storage_file, $newest->text);
-  echo $newest->user->name . ' says ' . $newest->text . PHP_EOL;
+$text = preg_replace('"\b(https?://\S+)"', '(url)', $newest->text);
+
+if ($text != $last) {
+  file_put_contents($storage_file, $text);
+  echo $newest->user->name . ' says ' . $text . PHP_EOL;
 }
